@@ -1,5 +1,5 @@
-1. Organize code so that all functions that are not dealing with state are in a seprate controllers file
-	1a. All functions that are operating on simaler data, group them into an object
+DONE - 1. Organize code so that all functions that are not dealing with state are in a seprate controllers file
+DONE -  	1a. All functions that are operating on simaler data, group them into an object
 
 2. Create a worker thread to handle the organizing of all data
 	2a. Make one of the operations of the worker thread to grab all feilds from the data for later search
