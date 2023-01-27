@@ -1,0 +1,41 @@
+import React from 'react'
+import ComplexSelector from './ComplexSelector'
+
+function TopSection({statePackage}) {
+
+    const { firstName, setFirstName, lastName, setLastName, dataSetIds } = statePackage;
+    const { yearPackage, amountPackage } = statePackage;
+
+    const SITE_TEXT = {
+        TITLE: 'DOCTOR PAYMENT SEARCH',
+        CREDIT: 'By Ade Ritchards'
+    }
+  return (
+    <div className='topSection'>
+        <div className="title">
+            <h1>{SITE_TEXT.TITLE}</h1>
+            <p className='siteCredit'>{SITE_TEXT.CREDIT}</p>
+        </div>
+    <div className='inputRow'>
+        <input
+            className='nameInput'
+            type="text"
+            placeholder='First Name'
+            onChange={e=>setFirstName(e.target.value)}
+            value={firstName}
+        />
+        <input
+            className='nameInput'
+            type="text"
+            placeholder='Last Name'
+            onChange={e=>setLastName(e.target.value)}
+            value={lastName}
+        />
+        <ComplexSelector name='Year' selectorPackage={yearPackage} dataSetIds={dataSetIds}/>
+        <ComplexSelector name='Amount' selectorPackage={amountPackage} dataSetIds={dataSetIds}/>
+    </div>
+    </div>
+  )
+}
+
+export default TopSection
