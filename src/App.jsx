@@ -21,6 +21,7 @@ function App() {
   const amountRangeToggle = useState(false);
   const amountRange = useState(new Array(2));
   const exactAmount = useState("");
+  const [ limits, setLimits ] = useState([]);
 
     const yearIsRange = yearRangeToggle[0];
     const [ yearFrom, yearTo ] = yearRange[0];
@@ -61,7 +62,7 @@ function App() {
     .then(r=>setDataSetIds(create_Key_Value_Pairs_Connecting_A_Year_To_Its_ID(r.data)))},[]);
 
   //Testing
-  useEffect(()=>{console.log(dataSetIds)},[dataSetIds]);
+  //useEffect(()=>{console.log(dataSetIds)},[dataSetIds]);
 
   return(
     <>

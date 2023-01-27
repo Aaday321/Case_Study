@@ -46,7 +46,7 @@ export const Filter = {
 
 export const APIcontroller = {
     hitEndPoint: function({year, limit, offset}){
-        return axios.get(`https://openpaymentsdata.cms.gov/api/1/datastore/query/${year}/0?offset=0&count=true&results=true&schema=true&keys=true&format=json&rowIds=false`)
+        return axios.get(`https://openpaymentsdata.cms.gov/api/1/datastore/query/${year}/0?offset=${offset}&count=true&results=true&schema=true&keys=true&format=json&rowIds=false`)
     },
     hitAPIwithExactYear: function(year, dataSetIds){
         if(!year) return;
@@ -61,14 +61,16 @@ export const APIcontroller = {
         return Promise.all(promises)
             .then(results => {
                 let localData = [];
-                for(let i of results){
-                    localData = [...localData, ...i.data.results]
-                }
+                for(let i of results) localData = [...localData, ...i.data.results];
                 return localData;
             })
-            .catch(error => {
-                throw error;
-            });
-    }
+            .catch(err => console.log(err));
+        },
+        grabMoreDataExactYear: async function({offset, year, currentData}){
+            if(!year) return;
+            const moreData = await this.hitEndPoint({year, offset});
+            //console.log(mixedData.length)
+            return moreData
+        }
     
 }
