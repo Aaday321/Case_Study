@@ -113,13 +113,15 @@ function Results({statePackage}) {
     return(
         <ul>
             {filterData().map( i => {
+                //TODO rewrite this so that we're only mapping over the data that gets rendered
+                //So that means find a way to filter or slice before use of the .map method
                 let localSearch = findKey(i);
                 let firstName = localSearch('first_name');
                 let lastName = localSearch('last_name');
-                let UNLISTED = 'UNLISTED';                ;
+                let UNLISTED = 'UNLISTED';
                 let paymentAmount = i.total_amount_of_payment_usdollars;
                 if(!firstName && !lastName) return <li>{UNLISTED}{' $'}{paymentAmount}</li>;
-                return <li>{firstName || UNLISTED}{' '}{lastName || UNLISTED}{' $'}{paymentAmount}</li>;
+                else return <li>{firstName || UNLISTED}{' '}{lastName || UNLISTED}{' $'}{paymentAmount}</li>;
             }).filter((i,index)=>{
                 if(index === filterData().length-1 && index < 15) {}
                 return (index<=15);
