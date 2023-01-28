@@ -11,7 +11,7 @@ function Results({statePackage, dataNeedsRefresh}) {
 
     const [ isSearching, setIsSearching ] = useState(false);
 
-    const initialLoad = useRef(0); //HOPE THIS WORKS 
+    const initialLoad = useRef(true); //HOPE THIS WORKS 
     const [offset, setOffset ] = useState(0);
 
     const { firstName, lastName, dataSetIds } = statePackage;
@@ -49,7 +49,7 @@ function Results({statePackage, dataNeedsRefresh}) {
                 ?.then(r=>setAllData(r))
                 ?.catch(err=>console.log(err));
         }
-    },[ yearFrom, yearTo, year, yearIsRange, dataNeedsRefresh ]);
+    },[ yearFrom, yearTo, year, dataNeedsRefresh ]);
 
     //Reset the pages every time a value relating to name or amount changes
     useEffect(()=>{setPage(0); setLimitHit(false)},[firstName, lastName, amount, amountFrom, amountTo])
@@ -58,9 +58,9 @@ function Results({statePackage, dataNeedsRefresh}) {
     useEffect(()=>{
         const args = { allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page };
         let itemsOnPage = Filter.filterData(args).length;
-        initialLoad.current = false;
-        if(itemsOnPage < 15){
-            setIsSearching(true);
+        if(itemsOnPage < 15 && allData.length > 0){
+            if(initialLoad.current == false) setIsSearching(true);
+            initialLoad.current = true;
             console.log('searching...');
             if(!yearIsRange && year){
                 setOffset(c=>{
@@ -74,22 +74,15 @@ function Results({statePackage, dataNeedsRefresh}) {
                         blockLevelLimitHit = true;
                     }
                     if(blockLevelLimitHit) return limits[year];
-                    
                     APIcontroller.grabMoreDataExactYear({year: dataSetIds[year], offset: nextOffset})
                         .then(r=>{
-                            console.log(allData.length);
-                            setAllData(cur=>{
-                                const concat = [...cur, ...r.data.results];
-                                console.log(concat.length);
-                                return concat;
-                            });
+                            setAllData(cur=>[...cur, ...r.data.results]);
                         });
                     return nextOffset;
                 })
             }else if(yearIsRange && yearFrom && yearTo && itemsOnPage < 15){
                 setOffset(c=>{
                     let nextOffset = c+500;
-                    let blockLevelLimitHit = false;
                     APIcontroller.grabMoreDataWithRange({offset:nextOffset, yearFrom, yearTo, dataSetIds, dataCounts:limits})
                         .then(r=>setAllData(cur=>{
                             let concat = [...cur, ...r];
@@ -100,7 +93,9 @@ function Results({statePackage, dataNeedsRefresh}) {
                 })
             }
         } else setIsSearching(false);
+        return ()=>{initialLoad.current = false}
     },[page, firstName, allData, lastName, amount, amountFrom, amountTo]);
+
 
 
     const test = Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page}).map( function(i,index,thisArray) {
@@ -109,22 +104,25 @@ function Results({statePackage, dataNeedsRefresh}) {
         let lastName = localSearch('last_name');
         let UNLISTED = 'UNLISTED';
         let paymentAmount = i.total_amount_of_payment_usdollars;
-        return <li key={uuidv4()}><ResultsRow number={index+page} firstName={firstName} lastName={lastName} paymentAmount={paymentAmount} index={index}/></li>;
+        return (
+            <li key={uuidv4()}>
+                 <ResultsRow number={index+page} firstName={firstName} lastName={lastName} paymentAmount={paymentAmount} index={index}/>
+            </li>
+            );
     })
     
     return(
         <div className='resultsSection'>
             <div className="infoRow">
-                <p>{test.length < 15 && !initialLoad && 'Searching...'}</p>
+                <p>{isSearching && allData.length > 0 && 'Searching...'}</p>
                 <p>Searched through {allData.length.toLocaleString("en-US")} results</p>
-                
             </div>
             <ul className='resultsBox'>
                 {test}
             </ul>
             <div className="btns">
                 <button
-                    className={page < 15 ? 'notClickable' : 'clickable'}
+                    className={page < 15 ? 'notClickable prev' : 'clickable prev'}
                     onClick={()=>setPage(c=>{
                         if(c>0) return c-15;
                         else return 0;
@@ -139,6 +137,7 @@ function Results({statePackage, dataNeedsRefresh}) {
                 >
                     {'Next >'}
                 </button>
+                <button className='exportBtn'>Export Filtered Results</button>
             </div>
         </div>
     )

@@ -11,7 +11,7 @@
   "dependencies": {
     "axios": "^1.2.4",
     "comlink": "^4.3.1",
-    "framer-motion": "^8.5.4",
+    "dinero.js": "^1.9.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "uuid": "^9.0.0",

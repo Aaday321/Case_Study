@@ -8,7 +8,7 @@
 }
 
 body{
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   width: 100vw;
   height: 100vh;
 }
@@ -190,7 +190,7 @@ input::placeholder{
 }
 
 .resultsSection{
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -210,15 +210,21 @@ input::placeholder{
   display: flex;
   position: relative;
   left: -15px;
+  width: 70rem;
+  justify-content: center;
+  margin-top: 1rem;
 }
 
 .notClickable, .clickable{
   margin-inline: 2.5rem;
-  margin-top: 1.5rem;
   border: none;
   background-color: transparent;
   font-size: 20px;
   color: black;
+}
+
+.prev{
+  margin-left: 27.5rem;
 }
 
 .notClickable{
@@ -227,4 +233,19 @@ input::placeholder{
 
 .clickable{
   cursor: pointer;
+}
+
+.exportBtn{
+  margin-left: auto;
+  cursor: pointer;
+  background-color: #71B97D;
+  border: none;
+  padding: 0;
+  height: fit-content;
+  padding-block: 13px;
+  padding-inline: 13px;
+  border-radius: 5px;
+  margin-right: 3rem;
+  position: relative;
+  top: -5px;
 }
