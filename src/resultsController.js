@@ -1,4 +1,6 @@
 import axios from "axios";
+import {writeFile, utils} from "xlsx";
+
 
 export const Filter = {
     findKey: function(item) {
@@ -31,7 +33,7 @@ export const Filter = {
             return(payment_amount >= Number(amountFrom) && payment_amount <= Number(amountTo));
         }
     )},
-    filterData: function({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page}){
+    filterData: function({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page}, exportMe){
         if(!allData?.length) return [];
         
         let data = allData;
@@ -40,8 +42,7 @@ export const Filter = {
 
         if(amount && !amountIsRange) data = this.filterDataByExactAmount(data, amount);
         else if(amountIsRange && amountFrom && amountTo) data = this.filterDataByAmountRange(data, amountFrom, amountTo);
-        let results = data.slice(page,page+15);
-        return results;
+        return exportMe ? data.slice(page,page+15) : data;
     },
 }
 
@@ -102,4 +103,14 @@ export const APIcontroller = {
             })
             .catch(err => console.log(err));
     },   
+}
+
+export const ExportController = {
+    handleExport:(data) => {
+        const ws = utils.json_to_sheet(data);
+        const wb = utils.book_new();
+        utils.book_append_sheet(wb, ws, "Sheet1");
+        
+        writeFile(wb, 'filename.xls')
+    }
 }

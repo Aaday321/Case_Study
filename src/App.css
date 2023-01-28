@@ -10,7 +10,7 @@
 body{
   background-color: rgb(255, 255, 255);
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .topSection{
@@ -75,6 +75,7 @@ body{
   color: black;
   background-color: var(--Light_color);
   font-size: 12px;
+  border: none;
 }
 
 .topRowRightSelected, .topRowLeftSelected{
@@ -86,6 +87,7 @@ body{
   place-content: center;
   user-select: none;
   font-size: 12px;
+  border: none;
 }
 
 .topRowLeftSelected{
@@ -248,4 +250,17 @@ input::placeholder{
   margin-right: 3rem;
   position: relative;
   top: -5px;
+}
+
+.previewSection{
+  color: black;
+}
+
+.devBtn{
+  right: 0;
+  position: absolute;
+  cursor: pointer;
+  background-color: transparent;
+  color: black;
+  border: none;
 }

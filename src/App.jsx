@@ -9,9 +9,10 @@ import DropDown from './components/DropDown'
 import ComplexSelector from './components/ComplexSelector'
 import TopSection from './components/TopSection'
 import Results from './components/Results'
+import DevPreview from './components/DevPreview'
 
 function App() {
-
+  const [ renderDevPreview, setRenderDevPreview ] = useState(false);
   const [ dataSetIds, setDataSetIds ] = useState({}); //Key value pairs of years and their ids
   const [ firstName, setFirstName ] = useState("");
   const [ lastName, setLastName ] = useState("");
@@ -22,16 +23,10 @@ function App() {
   const amountRange = useState(new Array(2));
   const exactAmount = useState("");
 
+  const [ allDataCount, setAllDataCount ] = useState(0);
+
   const [ dataNeedsRefresh, setDataNeedsRefresh ] = useState(false);
   const [ lastChecked, setLastChecked ] = useState(Date.now());
-
-    const yearIsRange = yearRangeToggle[0];
-    const [ yearFrom, yearTo ] = yearRange[0];
-    const year = exactYear[0];
-
-    const amountIsRange = amountRangeToggle[0];
-    const [ amountFrom, amountTo ] = amountRange[0];
-    const amount = exactAmount[0];
 
     const GENERAL_PAYMENT_IDENTIFIER = 'd2d239e8-05e9-515d-978c-69b34af232da';
     const MAIN_END_POINT = 'https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids';
@@ -58,7 +53,8 @@ function App() {
       amountRange,
       exactAmount,
     ],
-    dataSetIds //Key value pairs of years and their ids
+    dataSetIds, //Key value pairs of years and their ids
+    allDataCount, setAllDataCount,
   }
 
   //Checks if any data from any year has been modified
@@ -79,6 +75,8 @@ function App() {
   return(
     <div >
       <TopSection statePackage={statePackage}/>
+      <button className='devBtn' onClick={()=>setRenderDevPreview(c=>!c)}>{renderDevPreview && 'Hide state preview' || 'Show state preview'}</button>
+      {renderDevPreview && <DevPreview statePackage={statePackage}/>}
       <Results statePackage={statePackage} dataNeedsRefresh={dataNeedsRefresh}/>
     </div>
   )

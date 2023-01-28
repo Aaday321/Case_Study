@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import axios from 'axios';
-import { Filter, APIcontroller } from '../resultsController';
+import { Filter, APIcontroller, ExportController } from '../resultsController';
 import { v4 as uuidv4 } from 'uuid';
 import ResultsRow from './ResultsRow';
 
@@ -14,7 +14,7 @@ function Results({statePackage, dataNeedsRefresh}) {
     const initialLoad = useRef(true); //HOPE THIS WORKS 
     const [offset, setOffset ] = useState(0);
 
-    const { firstName, lastName, dataSetIds } = statePackage;
+    const { firstName, lastName, dataSetIds, setAllDataCount } = statePackage;
     const { yearPackage, amountPackage } = statePackage;
     const [ yearRangeToggle, yearRange, exactYear ] = yearPackage;
     const [ amountRangeToggle, amountRange, exactAmount ] = amountPackage;
@@ -84,11 +84,7 @@ function Results({statePackage, dataNeedsRefresh}) {
                 setOffset(c=>{
                     let nextOffset = c+500;
                     APIcontroller.grabMoreDataWithRange({offset:nextOffset, yearFrom, yearTo, dataSetIds, dataCounts:limits})
-                        .then(r=>setAllData(cur=>{
-                            let concat = [...cur, ...r];
-                            console.log(concat.length);
-                            return concat;
-                        }))
+                        .then(r=>setAllData(cur=>[...cur, ...r]))
                     return nextOffset;
                 })
             }
@@ -96,13 +92,12 @@ function Results({statePackage, dataNeedsRefresh}) {
         return ()=>{initialLoad.current = false}
     },[page, firstName, allData, lastName, amount, amountFrom, amountTo]);
 
+    useEffect(()=>{setAllDataCount(allData.length)},[allData])
 
-
-    const test = Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page}).map( function(i,index,thisArray) {
+    const filteredData = Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page}).map( function(i,index,thisArray) {
         let localSearch = Filter.findKey(i);
         let firstName = localSearch('first_name');
         let lastName = localSearch('last_name');
-        let UNLISTED = 'UNLISTED';
         let paymentAmount = i.total_amount_of_payment_usdollars;
         return (
             <li key={uuidv4()}>
@@ -118,7 +113,7 @@ function Results({statePackage, dataNeedsRefresh}) {
                 <p>Searched through {allData.length.toLocaleString("en-US")} results</p>
             </div>
             <ul className='resultsBox'>
-                {test}
+                {filteredData}
             </ul>
             <div className="btns">
                 <button
@@ -137,7 +132,9 @@ function Results({statePackage, dataNeedsRefresh}) {
                 >
                     {'Next >'}
                 </button>
-                <button className='exportBtn'>Export Filtered Results</button>
+                <button onClick={()=>{
+                    ExportController.handleExport(Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page}))
+                }} className='exportBtn'>Export Filtered Results</button>
             </div>
         </div>
     )

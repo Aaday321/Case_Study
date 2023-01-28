@@ -108,18 +108,18 @@ function ComplexSelector({name, selectorPackage, dataSetIds}) {
   return (
     <div className='complexInput'>
         <div className='topRow'>
-            <div
+            <button
                 onClick={!rangeIsSelected ? ()=>{setRangeIsSelected(c=>!c); resetFields()} : null}
                 className={rangeIsSelected ? 'topRowLeftSelected' : 'topRowLeft' }
             >
                 Range
-            </div>
-            <div
+            </button>
+            <button
                 onClick={rangeIsSelected ? ()=>{setRangeIsSelected(c=>!c); resetFields()} : null}
                 className={rangeIsSelected ? 'topRowRight' : 'topRowRightSelected'}
             >
                 {name}
-            </div>
+            </button>
         </div>
         { rangeIsSelected &&
         <div className="bottomRow">
