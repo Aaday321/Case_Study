@@ -33,7 +33,7 @@ export const Filter = {
             return(payment_amount >= Number(amountFrom) && payment_amount <= Number(amountTo));
         }
     )},
-    filterData: function({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page}, exportMe){
+    filterData: function({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit}){
         if(!allData?.length) return [];
         
         let data = allData;
@@ -42,7 +42,7 @@ export const Filter = {
 
         if(amount && !amountIsRange) data = this.filterDataByExactAmount(data, amount);
         else if(amountIsRange && amountFrom && amountTo) data = this.filterDataByAmountRange(data, amountFrom, amountTo);
-        return exportMe ? data.slice(page,page+15) : data;
+        return !limit ? data.slice(page,page+15) : data.slice(0,limit)
     },
 }
 
@@ -110,7 +110,6 @@ export const ExportController = {
         const ws = utils.json_to_sheet(data);
         const wb = utils.book_new();
         utils.book_append_sheet(wb, ws, "Sheet1");
-        
         writeFile(wb, 'filename.xls')
     }
 }

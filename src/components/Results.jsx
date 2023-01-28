@@ -94,7 +94,7 @@ function Results({statePackage, dataNeedsRefresh}) {
 
     useEffect(()=>{setAllDataCount(allData.length)},[allData])
 
-    const filteredData = Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page}).map( function(i,index,thisArray) {
+    const filteredData = Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:false}).map( function(i,index,thisArray) {
         let localSearch = Filter.findKey(i);
         let firstName = localSearch('first_name');
         let lastName = localSearch('last_name');
@@ -133,7 +133,7 @@ function Results({statePackage, dataNeedsRefresh}) {
                     {'Next >'}
                 </button>
                 <button onClick={()=>{
-                    ExportController.handleExport(Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page}))
+                    ExportController.handleExport(Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:Infinity}))
                 }} className='exportBtn'>Export Filtered Results</button>
             </div>
         </div>
