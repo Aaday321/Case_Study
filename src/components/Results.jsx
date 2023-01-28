@@ -2,14 +2,16 @@ import React, { useEffect, useState, useRef } from 'react'
 import axios from 'axios';
 import { Filter, APIcontroller } from '../resultsController';
 import { v4 as uuidv4 } from 'uuid';
+import ResultsRow from './ResultsRow';
 
 function Results({statePackage, dataNeedsRefresh}) {
 
     //const [ nextOffset, setNextOffset ] = useState(0);
     const [ page, setPage ] = useState(0);
 
-    const [ arrOfOffsets, setArrOfOffsets ] = useState([]);
+    const [ isSearching, setIsSearching ] = useState(false);
 
+    const initialLoad = useRef(0); //HOPE THIS WORKS 
     const [offset, setOffset ] = useState(0);
 
     const { firstName, lastName, dataSetIds } = statePackage;
@@ -21,7 +23,7 @@ function Results({statePackage, dataNeedsRefresh}) {
 
     const [ allData, setAllData ] = useState([]);
 
-    const [ limitHit, setLimitHit ] = useState(false);
+    const [ limitHit, setLimitHit ] = useState(true);
 
     const yearIsRange = yearRangeToggle[0];
     const [ yearFrom, yearTo ] = yearRange[0];
@@ -56,8 +58,9 @@ function Results({statePackage, dataNeedsRefresh}) {
     useEffect(()=>{
         const args = { allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page };
         let itemsOnPage = Filter.filterData(args).length;
+        initialLoad.current = false;
         if(itemsOnPage < 15){
-            
+            setIsSearching(true);
             console.log('searching...');
             if(!yearIsRange && year){
                 setOffset(c=>{
@@ -96,8 +99,9 @@ function Results({statePackage, dataNeedsRefresh}) {
                     return nextOffset;
                 })
             }
-        }
+        } else setIsSearching(false);
     },[page, firstName, allData, lastName, amount, amountFrom, amountTo]);
+
 
     const test = Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page}).map( function(i,index,thisArray) {
         let localSearch = Filter.findKey(i);
@@ -105,22 +109,38 @@ function Results({statePackage, dataNeedsRefresh}) {
         let lastName = localSearch('last_name');
         let UNLISTED = 'UNLISTED';
         let paymentAmount = i.total_amount_of_payment_usdollars;
-        if(!firstName && !lastName) return <li key={uuidv4()}>{UNLISTED}{' $'}{paymentAmount}</li>;
-        else return <li key={uuidv4()}>{firstName || UNLISTED}{' '}{lastName || UNLISTED}{' $'}{paymentAmount}</li>;
+        return <li key={uuidv4()}><ResultsRow number={index+page} firstName={firstName} lastName={lastName} paymentAmount={paymentAmount} index={index}/></li>;
     })
     
     return(
-        <>
-        <ul>
-            {test.length < 15 && 'Searching...'}
-            {test}
-        </ul>
-        <button onClick={()=>setPage(c=>{
-            if(c>0) return c-15;
-            else return 0;
-        })}>Previous</button>
-        <button onClick={()=>setPage(c=>c+15)}>Next</button>
-        </>
+        <div className='resultsSection'>
+            <div className="infoRow">
+                <p>{test.length < 15 && !initialLoad && 'Searching...'}</p>
+                <p>Searched through {allData.length.toLocaleString("en-US")} results</p>
+                
+            </div>
+            <ul className='resultsBox'>
+                {test}
+            </ul>
+            <div className="btns">
+                <button
+                    className={page < 15 ? 'notClickable' : 'clickable'}
+                    onClick={()=>setPage(c=>{
+                        if(c>0) return c-15;
+                        else return 0;
+                    })}
+                >
+                    {'< Previous'}
+                </button>
+
+                <button
+                    className={ isSearching ? 'notClickable' : 'clickable' }
+                    onClick={()=>isSearching ?  null : setPage(c=>c+15)}
+                >
+                    {'Next >'}
+                </button>
+            </div>
+        </div>
     )
 }
 

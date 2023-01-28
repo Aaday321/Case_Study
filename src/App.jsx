@@ -23,7 +23,6 @@ function App() {
   const exactAmount = useState("");
 
   const [ dataNeedsRefresh, setDataNeedsRefresh ] = useState(false);
-  const [ limits, setLimits ] = useState({}); //TODO need to implement limits!
   const [ lastChecked, setLastChecked ] = useState(Date.now());
 
     const yearIsRange = yearRangeToggle[0];
@@ -78,10 +77,10 @@ function App() {
 
 
   return(
-    <>
+    <div >
       <TopSection statePackage={statePackage}/>
       <Results statePackage={statePackage} dataNeedsRefresh={dataNeedsRefresh}/>
-    </>
+    </div>
   )
 }
 

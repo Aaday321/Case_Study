@@ -104,6 +104,7 @@ function ComplexSelector({name, selectorPackage, dataSetIds}) {
         }
     }
 
+
   return (
     <div className='complexInput'>
         <div className='topRow'>
@@ -125,6 +126,7 @@ function ComplexSelector({name, selectorPackage, dataSetIds}) {
             <input
                 className='bottomRowLeft'
                 placeholder='From'
+                style={{textAlign:'center', paddingLeft:0}}
                 type="number"
                 onBlur={()=>setFrom(validateRangeFromValue())}
                 onChange={e=>handleChange(e,'from')}
@@ -133,6 +135,7 @@ function ComplexSelector({name, selectorPackage, dataSetIds}) {
             <input
                 className='bottomRowRight'
                 placeholder='To'
+                style={{textAlign:'center', paddingLeft:0}}
                 type="number"
                 onBlur={()=>setTo(validateRangeToValue())}
                 onChange={e=>handleChange(e, 'to')}
@@ -144,6 +147,7 @@ function ComplexSelector({name, selectorPackage, dataSetIds}) {
             <input
                 placeholder={`Enter ${name.toLowerCase()}`}
                 type="number"
+                style={{textAlign:'center', paddingLeft:0}}
                 onBlur={()=>setExactValue(validateExactValue())}
                 onChange={e=>handleChange(e, 'exactValue')}
                 value={exactValue}
