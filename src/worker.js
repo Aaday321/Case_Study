@@ -8,7 +8,6 @@
 
 
 
-const { APIcontroller, Filter } = require("./resultsController");
 
 
 
@@ -17,22 +16,7 @@ const { APIcontroller, Filter } = require("./resultsController");
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-self.onmessage = async function(msg) {
+onmessage = async function(msg) {
     const { data, args, offset, gmdArgs } = msg;
     const { allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page } = args
     let myOffset = offset;
@@ -43,7 +27,7 @@ self.onmessage = async function(msg) {
         let r = await APIcontroller.grabMoreDataExactYear({ year: gmdArgs.year, offset: myOffset, currentData:gmdArgs.currentData });
         results = [...results, ...r.data.results];
         myOffset += 500;
-        self.postMessage(results)
+        postMessage(res)
     }
 
 }

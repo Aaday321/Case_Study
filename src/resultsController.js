@@ -32,7 +32,8 @@ export const Filter = {
         }
     )},
     filterData: function({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page}){
-        if(!allData.length) return [];
+        if(!allData?.length) return [];
+        
         let data = allData;
         if(firstName) data = this.filterDataByFirstName(data, firstName);
         if(lastName) data = this.filterDataByLastName(data, lastName);
@@ -65,12 +66,40 @@ export const APIcontroller = {
                 return localData;
             })
             .catch(err => console.log(err));
-        },
-        grabMoreDataExactYear: async function({offset, year, currentData}){
-            if(!year) return;
-            const moreData = await this.hitEndPoint({year, offset});
-            //console.log(mixedData.length)
-            return moreData
+    },
+    grabMoreDataExactYear: async function({offset, year}){
+        const moreData = await this.hitEndPoint({year, offset});
+        return moreData
+    },
+    grabMoreDataWithRange: function({offset, yearFrom, yearTo, dataSetIds, limits, dataCounts}){
+        let promises = [];
+        //if(!(Object.keys(dataCounts).length)) dataCounts = {}; //If dataCounts is an empty object 
+        for(let i=Number(yearFrom); i<=Number(yearTo); i++){
+            if(!dataCounts[i]) dataCounts[i] = 500;
+            else dataCounts[i] += 500;
+            promises.push(this.hitEndPoint({year:dataSetIds[i], offset}))
         }
-    
+        return Promise.all(promises)
+            .then(results =>{
+                let localData = [];
+                for(let i of results) localData = [...localData, ...i.data.results];
+                return localData;
+            })
+            .catch(err=>console.log(err))
+    },
+    findAndReturnLimits: function(dataSetIds){
+        const MIN = Number(Object.keys(dataSetIds)[0]);
+        const MAX = Number(Object.keys(dataSetIds)[Object.keys(dataSetIds).length-1]);
+        let promises = [];
+        for(let i=MIN; i<=MAX; i++){
+            promises.push(this.hitEndPoint({year:dataSetIds[i], offset:0}));
+        }
+        return Promise.all(promises)
+            .then(results => {
+                let counts = {};
+                for(let i=0; i<results.length; i++)counts[MIN+i] = results[i].data.count;
+                return counts;
+            })
+            .catch(err => console.log(err));
+    },   
 }

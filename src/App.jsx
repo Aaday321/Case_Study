@@ -21,7 +21,10 @@ function App() {
   const amountRangeToggle = useState(false);
   const amountRange = useState(new Array(2));
   const exactAmount = useState("");
-  const [ limits, setLimits ] = useState([]);
+
+  const [ dataNeedsRefresh, setDataNeedsRefresh ] = useState(false);
+  const [ limits, setLimits ] = useState({}); //TODO need to implement limits!
+  const [ lastChecked, setLastChecked ] = useState(Date.now());
 
     const yearIsRange = yearRangeToggle[0];
     const [ yearFrom, yearTo ] = yearRange[0];
@@ -31,8 +34,10 @@ function App() {
     const [ amountFrom, amountTo ] = amountRange[0];
     const amount = exactAmount[0];
 
-  const create_Key_Value_Pairs_Connecting_A_Year_To_Its_ID = responseData => {
-    const GENERAL_PAYMENT_IDENTIFIER = 'd2d239e8-05e9-515d-978c-69b34af232da'; //This is the identifier of the the General Payment data
+    const GENERAL_PAYMENT_IDENTIFIER = 'd2d239e8-05e9-515d-978c-69b34af232da';
+    const MAIN_END_POINT = 'https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids';
+
+  const create_Key_Value_Pairs_Connecting_A_Year_To_Its_ID = responseData => { //This is the identifier of the the General Payment data
     responseData = responseData.filter(i=>i.theme[0].identifier == GENERAL_PAYMENT_IDENTIFIER); //Filter out just the General Payment data
     const years = responseData.map(i=>Number(i.title.split(' ')[0]));
     responseData = responseData.map(i=>i.identifier); // grab only the identifiers within that
@@ -57,25 +62,26 @@ function App() {
     dataSetIds //Key value pairs of years and their ids
   }
 
+  //Checks if any data from any year has been modified
+  useEffect(function(){    
+    setInterval(async function(){
+      let response = await axios.get(MAIN_END_POINT);
+      response = response.data.filter(i=>i.theme[0].identifier == GENERAL_PAYMENT_IDENTIFIER);
+      for(let i of response) if(Date.parse(i['%modified']) > lastChecked)setDataNeedsRefresh(true);
+      setLastChecked(Date.now())
+    },1000000)
+  },[])
+
   //get the latest datasets on initial load
-  useEffect(()=>{axios.get('https://openpaymentsdata.cms.gov/api/1/metastore/schemas/dataset/items?show-reference-ids')
+  useEffect(()=>{axios.get(MAIN_END_POINT)
     .then(r=>setDataSetIds(create_Key_Value_Pairs_Connecting_A_Year_To_Its_ID(r.data)))},[]);
 
-  //Testing
-  //useEffect(()=>{console.log(dataSetIds)},[dataSetIds]);
 
   return(
     <>
       <TopSection statePackage={statePackage}/>
-      <Results statePackage={statePackage}/>
+      <Results statePackage={statePackage} dataNeedsRefresh={dataNeedsRefresh}/>
     </>
-  )
-
-  return(
-    <div className="tester">
-    <ComplexSelector name='Year'/>
-    <ComplexSelector name='Amount'/>
-    </div>
   )
 }
 

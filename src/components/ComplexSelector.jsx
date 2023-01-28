@@ -32,7 +32,6 @@ function ComplexSelector({name, selectorPackage, dataSetIds}) {
     useEffect(()=>setRange(c=>[c[0], validateRangeToValue()]),[to]);
     useEffect(()=>setValidExactValue(validateExactValue()),[exactValue]);
 
-
     const minFrom = name===VALUES.YEAR.ID       ? VALUES.YEAR.MIN_YEAR     : VALUES.MONEY.MIN_MONEY;
     const maxFrom = name===VALUES.YEAR.ID       ? VALUES.YEAR.MAX_YEAR - 1 : Infinity;
     const minTo = name===VALUES.YEAR.ID         ? VALUES.YEAR.MIN_YEAR+1   : VALUES.MONEY.MIN_MONEY+0.01;
@@ -71,8 +70,8 @@ function ComplexSelector({name, selectorPackage, dataSetIds}) {
         else if(numFrom > maxFrom) adjustedInput = maxFrom;
         else adjustedInput = from;
 
-        //Check to ensure that the "From" value is lower than the "To" value
-        //If "From" is not lower, then make "To" -> "From" + 1
+        //Check to ensure that the "from" value is lower than the "to" value
+        //If "From" is not lower, then make "to" -> "from" + 1
         if(numTo && adjustedInput >= numTo) setTo(Number(adjustedInput)+1);
 
         return adjustedInput;
@@ -89,8 +88,8 @@ function ComplexSelector({name, selectorPackage, dataSetIds}) {
         else if(numTo > maxTo) adjustedInput = maxTo;
         else adjustedInput = to;
 
-        //Check to ensure that the "To" value is higher than the "From" value
-        //If "To" is not higher, then make "To" -> "From" + 1
+        //Check to ensure that the "to" value is higher than the "from" value
+        //If "To" is not higher, then make "to" -> "from" + 1
         if(numFrom && numTo <= numFrom) adjustedInput = numFrom + 1;
         
         return adjustedInput;
@@ -98,7 +97,6 @@ function ComplexSelector({name, selectorPackage, dataSetIds}) {
 
     const handleChange = (e, source) => {
         const newEntry = e.target.value;
-        setMsg('');
         switch(source){
             case 'from': setFrom(newEntry); return;
             case 'to': setTo(newEntry); return;
