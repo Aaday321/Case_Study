@@ -12,6 +12,7 @@ body{
   background-color: rgb(255, 255, 255);
   width: 100vw;
   overflow-x: hidden;
+  min-height: 100vh;
 }
 
 .topSection{
@@ -219,6 +220,7 @@ input::placeholder{
   justify-content: center;
   margin-top: 1rem;
   margin-bottom: 25px;
+  margin-top: 0.5rem;
 }
 
 .notClickable, .clickable{
@@ -232,7 +234,6 @@ input::placeholder{
 .prev{
   margin-left: 27.5rem;
   padding-left: 1rem;
-  margin-top: 0.5rem;
 }
 
 .notClickable{
