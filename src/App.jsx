@@ -22,6 +22,7 @@ function App() {
   const amountRangeToggle = useState(false);
   const amountRange = useState(new Array(2));
   const exactAmount = useState("");
+  const [ globalOffset, setGlobalOffset ] = useState(0);
 
 //  const [ allDataCount, setAllDataCount ] = useState(0);
 
@@ -74,7 +75,7 @@ function App() {
       exactAmount,
     ],
     lookUpTable, //Key value pairs of years and their ids
- //   allDataCount, setAllDataCount,
+    globalOffset, setGlobalOffset
   }
 
 

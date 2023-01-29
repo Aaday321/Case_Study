@@ -17,7 +17,7 @@ function Results({statePackage, dataNeedsRefresh, setDataNeedsRefresh}) {
 
     const [offset, setOffset ] = useState(0);
 
-const { firstName, lastName, lookUpTable,/* setAllDataCount */} = statePackage;
+    const { firstName, lastName, lookUpTable, setGlobalOffset} = statePackage;
     const { yearPackage, amountPackage } = statePackage;
     const [ yearRangeToggle, yearRange, exactYear ] = yearPackage;
     const [ amountRangeToggle, amountRange, exactAmount ] = amountPackage;
@@ -55,6 +55,17 @@ const { firstName, lastName, lookUpTable,/* setAllDataCount */} = statePackage;
         setDataNeedsRefresh(false);
     },[ yearFrom, yearTo, year, dataNeedsRefresh ]);
 
+    //Reset Offset to recheck previously checked data when needed
+        //This is now important because we are not store all previously Searched items in state
+    useEffect(()=>{setOffset(0)},[
+        firstName, lastName, year,
+        yearFrom, yearTo, dataNeedsRefresh,
+        amount, amountFrom, amountTo
+    ]);
+
+    //Update Global Offset
+    useEffect(()=>{setGlobalOffset(offset)},[offset]);
+
     //Reset the pages every time a value relating to name or amount changes
     useEffect(()=>{setPage(0); setLimitHit(false)},[firstName, lastName, amount, amountFrom, amountTo])
 
@@ -80,7 +91,10 @@ const { firstName, lastName, lookUpTable,/* setAllDataCount */} = statePackage;
                     if(blockLevelLimitHit) return limits[year];
                     APIcontroller.grabMoreDataExactYear({year: lookUpTable[year], offset: nextOffset})
                         .then(r=>{
-                            setAllData(cur=>[...cur, ...r.data.results]);
+                            setAllData(cur=>{
+                                if(cur.length > 50_000)return Filter.filterData({allData:[...cur, ...r.data.results], firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:Infinity})
+                                else return [...cur, ...r.data.results];
+                            });
                         });
                     return nextOffset;
                 })
@@ -113,7 +127,7 @@ const displayData = Filter.filterData({allData, firstName, lastName, amount, amo
             {'Rerenders: '+ (()=>counter.current++)()}
             <div className="infoRow">
                 <p>{isSearching && allData.length > 0 && 'Searching...' || !!allData.length && `Found ${allMatches.length.toLocaleString("en-US")} matches` || 'Enter a year or a range of years to begin your search 🔍'}</p>
-                <p>Searched through {allData.length.toLocaleString("en-US")} results</p>
+                <p>Currently caching {allData.length.toLocaleString("en-US")} </p>
             </div>
             <ul className='resultsBox'>
                 {displayData}
