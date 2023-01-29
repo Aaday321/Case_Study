@@ -31,7 +31,7 @@ function DevPreview({statePackage}) {
         {amountIsRange && <p><strong>Amount To: </strong>{amountTo}</p>}
         {amountIsRange || <p><strong>Exact Amount: </strong>{amount}</p>}
         <br />
-        <p>Offset: {globalOffset.toLocaleString("en-US")}</p>
+        <p><strong>Offset: </strong>{globalOffset.toLocaleString("en-US")}</p>
     </div>
   )
 }
