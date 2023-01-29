@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 
 
-function ComplexSelector({name, selectorPackage, dataSetIds}) {
+function ComplexSelector({name, selectorPackage, lookUpTable}) {
 
     const [ rangeToggle, range, exact ] = selectorPackage;
 
@@ -17,9 +17,9 @@ function ComplexSelector({name, selectorPackage, dataSetIds}) {
     const VALUES = {
         YEAR:{
             ID: 'Year',
-            MIN_YEAR: Number(Object.keys(dataSetIds)[0]),
-            MAX_YEAR: Number(Object.keys(dataSetIds)[Object.keys(dataSetIds).length-1]),
-            RANGE_MSG: `Selection must be between ${Number(Object.keys(dataSetIds)[0])} and ${Number(Object.keys(dataSetIds)[Object.keys(dataSetIds).length-1])}`
+            MIN_YEAR: Number(Object.keys(lookUpTable)[0]),
+            MAX_YEAR: Number(Object.keys(lookUpTable)[Object.keys(lookUpTable).length-1]),
+            RANGE_MSG: `Selection must be between ${Number(Object.keys(lookUpTable)[0])} and ${Number(Object.keys(lookUpTable)[Object.keys(lookUpTable).length-1])}`
         },
         MONEY:{
             ID: 'Amount',

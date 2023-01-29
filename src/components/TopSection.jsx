@@ -3,7 +3,7 @@ import ComplexSelector from './ComplexSelector'
 
 function TopSection({statePackage}) {
 
-    const { firstName, setFirstName, lastName, setLastName, dataSetIds } = statePackage;
+    const { firstName, setFirstName, lastName, setLastName, lookUpTable } = statePackage;
     const { yearPackage, amountPackage } = statePackage;
 
     const SITE_TEXT = {
@@ -31,8 +31,8 @@ function TopSection({statePackage}) {
             onChange={e=>setLastName(e.target.value)}
             value={lastName}
         />
-        <ComplexSelector name='Year' selectorPackage={yearPackage} dataSetIds={dataSetIds}/>
-        <ComplexSelector name='Amount' selectorPackage={amountPackage} dataSetIds={dataSetIds}/>
+        <ComplexSelector name='Year' selectorPackage={yearPackage} lookUpTable={lookUpTable}/>
+        <ComplexSelector name='Amount' selectorPackage={amountPackage} lookUpTable={lookUpTable}/>
     </div>
     </div>
   )

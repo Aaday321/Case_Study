@@ -5,12 +5,13 @@
   padding: 0;
   --Dark_color: #646464;
   --Light_color: #AFAFAF;
+
 }
 
 body{
   background-color: rgb(255, 255, 255);
   width: 100vw;
-  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 .topSection{
@@ -154,8 +155,10 @@ input::placeholder{
   height: 30rem;
   width: 70rem;
   border-radius: 8px;
-  overflow-y: scroll;
+  overflow-y: auto;
   background-color: #dadada;
+
+  overflow-x: hidden;
 }
 
 .resultRow{
@@ -228,6 +231,8 @@ input::placeholder{
 
 .prev{
   margin-left: 27.5rem;
+  padding-left: 1rem;
+  margin-top: 0.5rem;
 }
 
 .notClickable{
@@ -264,4 +269,26 @@ input::placeholder{
   background-color: transparent;
   color: black;
   border: none;
+}
+
+/*Scrollbar*/
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 15px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

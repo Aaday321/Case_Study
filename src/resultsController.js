@@ -13,8 +13,6 @@ export const Filter = {
     },
     filterDataByFirstName: function(data, firstName) {
         return data.filter(i=>{
-             //Currently there is only one key in the data that contains the string 'first_name'
-                //If next year this were to change, this code would need to be updated to address that change
             let first_name = this.findKey(i)('first_name');
             return(first_name.slice(0, firstName.length).toUpperCase() == firstName.toUpperCase());
         })
@@ -49,19 +47,29 @@ export const Filter = {
 }
 
 export const APIcontroller = {
-    hitEndPoint: function({year, limit, offset, firstName, lastName, amountFrom, amountTo, amount}){
-        if(!year) console.log('ERROR!');
+    hitEndPoint: function({year, limit, offset, yearTable}){
+        
         return axios.get(`https://openpaymentsdata.cms.gov/api/1/datastore/query/${year}/0?offset=${offset}&count=true&results=true&schema=true&keys=true&format=json&rowIds=false`)
     },
-    hitAPIwithExactYear: function(year, dataSetIds){
+    hitAPIwithExactYear: function(year, lookUpTable){
         if(!year) return;
-        return this.hitEndPoint({year:dataSetIds[year], offset:0})
+        let fnKey;
+        let lnKey;
+        if(year == 2015) {
+            fnKey = 'physician_first_name';
+            lnKey = 'physician_last_name';
+        }else{
+            fnKey = 'covered_recipient_first_name';
+            lnKey = 'covered_recipient_last_name';
+        }
+
+        return this.hitEndPoint({year:lookUpTable[year], offset:0})
     },
-    hitAPIwithRangeOfYears: function(yearFrom, yearTo, dataSetIds){
+    hitAPIwithRangeOfYears: function(yearFrom, yearTo, lookUpTable){
         if(!yearFrom || !yearTo) return;
         let promises = [];
         for(let i=Number(yearFrom); i<=Number(yearTo); i++){
-            promises.push(this.hitEndPoint({year:dataSetIds[i], offset:0}));
+            promises.push(this.hitEndPoint({year:lookUpTable[i], offset:0}));
         }
         return Promise.all(promises)
             .then(results => {
@@ -75,13 +83,13 @@ export const APIcontroller = {
         const moreData = await this.hitEndPoint({year, offset});
         return moreData
     },
-    grabMoreDataWithRange: function({offset, yearFrom, yearTo, dataSetIds, limits, dataCounts}){
+    grabMoreDataWithRange: function({offset, yearFrom, yearTo, lookUpTable, limits, dataCounts}){
         let promises = [];
         //if(!(Object.keys(dataCounts).length)) dataCounts = {}; //If dataCounts is an empty object 
         for(let i=Number(yearFrom); i<=Number(yearTo); i++){
             if(!dataCounts[i]) dataCounts[i] = 500;
             else dataCounts[i] += 500;
-            promises.push(this.hitEndPoint({year:dataSetIds[i], offset}))
+            promises.push(this.hitEndPoint({year:lookUpTable[i], offset}))
         }
         return Promise.all(promises)
             .then(results =>{
@@ -91,12 +99,12 @@ export const APIcontroller = {
             })
             .catch(err=>console.log(err))
     },
-    findAndReturnLimits: function(dataSetIds){
-        const MIN = Number(Object.keys(dataSetIds)[0]);
-        const MAX = Number(Object.keys(dataSetIds)[Object.keys(dataSetIds).length-1]);
+    findAndReturnLimits: function(lookUpTable){
+        const MIN = Number(Object.keys(lookUpTable)[0]);
+        const MAX = Number(Object.keys(lookUpTable)[Object.keys(lookUpTable).length-1]);
         let promises = [];
         for(let i=MIN; i<=MAX; i++){
-            promises.push(this.hitEndPoint({year:dataSetIds[i], offset:0}));
+            promises.push(this.hitEndPoint({year:lookUpTable[i], offset:0}));
         }
         return Promise.all(promises)
             .then(results => {
