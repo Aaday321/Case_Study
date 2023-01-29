@@ -150,7 +150,7 @@ const displayData = Filter.filterData({allData, firstName, lastName, amount, amo
                     {allMatches.length-page >= 30 ? 'Next >' : 'Load More >'}
                 </button>
                 <button onClick={()=>{
-                    ExportController.handleExport(allMatches)
+                  allMatches.length ?  ExportController.handleExport(allMatches) : window.alert('No matches to export');
                 }} className='exportBtn'>{`Export All Matches`}</button>
             </div>
         </div>  

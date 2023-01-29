@@ -121,6 +121,7 @@ export const ExportController = {
         const ws = utils.json_to_sheet(data);
         const wb = utils.book_new();
         utils.book_append_sheet(wb, ws, "Sheet1");
-        writeFile(wb, 'filename.xls')
+        const fileName = window.prompt('Enter the name of your file') + '.xls'
+        writeFile(wb, fileName || 'untitled_data'+'.xls')
     }
 }
