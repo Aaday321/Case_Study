@@ -23,7 +23,7 @@ function App() {
   const amountRange = useState(new Array(2));
   const exactAmount = useState("");
 
-  const [ allDataCount, setAllDataCount ] = useState(0);
+//  const [ allDataCount, setAllDataCount ] = useState(0);
 
   const [ dataNeedsRefresh, setDataNeedsRefresh ] = useState(false);
   const [ lastChecked, setLastChecked ] = useState(Date.now());
@@ -54,7 +54,7 @@ function App() {
       exactAmount,
     ],
     dataSetIds, //Key value pairs of years and their ids
-    allDataCount, setAllDataCount,
+ //   allDataCount, setAllDataCount,
   }
 
   //Checks if any data from any year has been modified
@@ -64,7 +64,7 @@ function App() {
       response = response.data.filter(i=>i.theme[0].identifier == GENERAL_PAYMENT_IDENTIFIER);
       for(let i of response) if(Date.parse(i['%modified']) > lastChecked)setDataNeedsRefresh(true);
       setLastChecked(Date.now())
-    },1000000)
+    },1_000_000)
   },[])
 
   //get the latest datasets on initial load

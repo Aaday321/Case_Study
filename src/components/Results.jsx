@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import axios from 'axios';
+import axios, { all } from 'axios';
 import { Filter, APIcontroller, ExportController } from '../resultsController';
 import { v4 as uuidv4 } from 'uuid';
 import ResultsRow from './ResultsRow';
@@ -9,12 +9,14 @@ function Results({statePackage, dataNeedsRefresh}) {
     //const [ nextOffset, setNextOffset ] = useState(0);
     const [ page, setPage ] = useState(0);
 
+    const counter = useRef(0)
+
     const [ isSearching, setIsSearching ] = useState(false);
 
     const initialLoad = useRef(true); //HOPE THIS WORKS 
     const [offset, setOffset ] = useState(0);
 
-    const { firstName, lastName, dataSetIds, setAllDataCount } = statePackage;
+const { firstName, lastName, dataSetIds,/* setAllDataCount */} = statePackage;
     const { yearPackage, amountPackage } = statePackage;
     const [ yearRangeToggle, yearRange, exactYear ] = yearPackage;
     const [ amountRangeToggle, amountRange, exactAmount ] = amountPackage;
@@ -92,28 +94,32 @@ function Results({statePackage, dataNeedsRefresh}) {
         return ()=>{initialLoad.current = false}
     },[page, firstName, allData, lastName, amount, amountFrom, amountTo]);
 
-    useEffect(()=>{setAllDataCount(allData.length)},[allData])
+    //useEffect(()=>{setAllDataCount(allData.length); console.log(allData)},[allData])
+    useEffect(()=>console.log(page),[page])
 
-    const filteredData = Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:false}).map( function(i,index,thisArray) {
-        let localSearch = Filter.findKey(i);
-        let firstName = localSearch('first_name');
-        let lastName = localSearch('last_name');
-        let paymentAmount = i.total_amount_of_payment_usdollars;
-        return (
+   
+    
+const allMatches = Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:Infinity})
+const displayData = Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:false}).map( function(i,index,thisArray) {
+    let localSearch = Filter.findKey(i);
+    let firstName = localSearch('first_name');
+    let lastName = localSearch('last_name');
+    let paymentAmount = i.total_amount_of_payment_usdollars;
+    return (
             <li key={uuidv4()}>
-                 <ResultsRow number={index+page} firstName={firstName} lastName={lastName} paymentAmount={paymentAmount} index={index}/>
+                <ResultsRow number={index+page} firstName={firstName} lastName={lastName} paymentAmount={paymentAmount} index={index}/>
             </li>
             );
     })
-    
     return(
         <div className='resultsSection'>
+            {(()=>counter.current++)()}
             <div className="infoRow">
-                <p>{isSearching && allData.length > 0 && 'Searching...'}</p>
+                <p>{isSearching && allData.length > 0 && 'Searching...' || !!allData.length && `Found ${allMatches.length.toLocaleString("en-US")} matches` || 'Enter a year or a range of years to begin your search 🔍'}</p>
                 <p>Searched through {allData.length.toLocaleString("en-US")} results</p>
             </div>
             <ul className='resultsBox'>
-                {filteredData}
+                {displayData}
             </ul>
             <div className="btns">
                 <button
@@ -127,16 +133,16 @@ function Results({statePackage, dataNeedsRefresh}) {
                 </button>
 
                 <button
-                    className={ isSearching ? 'notClickable' : 'clickable' }
-                    onClick={()=>isSearching ?  null : setPage(c=>c+15)}
+                    className={ isSearching || !allData.length ? 'notClickable' : 'clickable' }
+                    onClick={()=>isSearching || !allData.length ?  null : setPage(c=>c+15)}
                 >
-                    {'Next >'}
+                    {allMatches.length-page >= 30 ? 'Next >' : 'Load More >'}
                 </button>
                 <button onClick={()=>{
-                    ExportController.handleExport(Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:Infinity}))
-                }} className='exportBtn'>Export Filtered Results</button>
+                    ExportController.handleExport(allMatches)
+                }} className='exportBtn'>{`Export All Matches`}</button>
             </div>
-        </div>
+        </div>  
     )
 }
 

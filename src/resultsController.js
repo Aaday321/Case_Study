@@ -13,6 +13,8 @@ export const Filter = {
     },
     filterDataByFirstName: function(data, firstName) {
         return data.filter(i=>{
+             //Currently there is only one key in the data that contains the string 'first_name'
+                //If next year this were to change, this code would need to be updated to address that change
             let first_name = this.findKey(i)('first_name');
             return(first_name.slice(0, firstName.length).toUpperCase() == firstName.toUpperCase());
         })
@@ -47,7 +49,8 @@ export const Filter = {
 }
 
 export const APIcontroller = {
-    hitEndPoint: function({year, limit, offset}){
+    hitEndPoint: function({year, limit, offset, firstName, lastName, amountFrom, amountTo, amount}){
+        if(!year) console.log('ERROR!');
         return axios.get(`https://openpaymentsdata.cms.gov/api/1/datastore/query/${year}/0?offset=${offset}&count=true&results=true&schema=true&keys=true&format=json&rowIds=false`)
     },
     hitAPIwithExactYear: function(year, dataSetIds){

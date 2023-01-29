@@ -19,7 +19,7 @@ body{
   justify-content: center;
   padding-top: 3rem;
   background-color: #dadada;
-  width: 100vw;
+  min-width: 100vw;
   padding-bottom: 3rem;
 }
 
@@ -215,6 +215,7 @@ input::placeholder{
   width: 70rem;
   justify-content: center;
   margin-top: 1rem;
+  margin-bottom: 25px;
 }
 
 .notClickable, .clickable{

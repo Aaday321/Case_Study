@@ -69,10 +69,10 @@ function ComplexSelector({name, selectorPackage, dataSetIds}) {
         if(numFrom < minFrom) adjustedInput = minFrom;
         else if(numFrom > maxFrom) adjustedInput = maxFrom;
         else adjustedInput = from;
-
+        
         //Check to ensure that the "from" value is lower than the "to" value
         //If "From" is not lower, then make "to" -> "from" + 1
-        if(numTo && adjustedInput >= numTo) setTo(Number(adjustedInput)+1);
+        if(numTo && adjustedInput >= numTo) setTo(Number(adjustedInput)+1)
 
         return adjustedInput;
     }
@@ -90,7 +90,7 @@ function ComplexSelector({name, selectorPackage, dataSetIds}) {
 
         //Check to ensure that the "to" value is higher than the "from" value
         //If "To" is not higher, then make "to" -> "from" + 1
-        if(numFrom && numTo <= numFrom) adjustedInput = numFrom + 1;
+        if(numFrom && numTo <= numFrom) adjustedInput = validateRangeFromValue() + 1;
         
         return adjustedInput;
     }
