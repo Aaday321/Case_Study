@@ -96,8 +96,8 @@ function Results({statePackage, dataNeedsRefresh, setDataNeedsRefresh}) {
                                 let concat = [...cur, ...r.data.results]; 
 
                                 // Quality checking the data
-                                const values = concat.map(obj => JSON.stringify(obj));
-                                const filteredArray = concat.filter((obj, i) => values.indexOf(JSON.stringify(obj)) === i);
+                                const stringified = concat.map(obj => JSON.stringify(obj));
+                                const filteredArray = concat.filter((obj, i) => stringified.indexOf(JSON.stringify(obj)) === i);
                                 //This quality check is not performant but is necessary until a better caching strategy is implemented     
 
                                 if(cur.length > 1_000)
@@ -150,7 +150,7 @@ const displayData = Filter.filterData({allData, firstName, lastName, amount, amo
     })
     return(
         <div className='resultsSection'>
-            {'Rerenders: '+ (()=>counter.current++)()}
+            {'Rerenders: '+ (()=>counter.current++)().toLocaleString('en-US')}
             <div className="infoRow">
                 <p>{isSearching && 'Searching...' || !!allData.length && `Found ${allMatches.length.toLocaleString("en-US")} matches`
                     || !isSearching && 'Enter a year or a range of years to begin your search 🔍'}</p>
@@ -170,7 +170,7 @@ const displayData = Filter.filterData({allData, firstName, lastName, amount, amo
                 </button>
 
                 <button
-                    className={ isSearching || !allData.length ? 'notClickable' : 'clickable' }
+                    className={ isSearching || !allData.length ? 'notClickable next' : 'clickable next' }
                     onClick={()=>isSearching || !allData.length ?  null : setPage(c=>c+15)}
                 >
                     {allMatches.length-page >= 30 ? 'Next >' : 'Load More >'}

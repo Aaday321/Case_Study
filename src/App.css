@@ -293,3 +293,91 @@ input::placeholder{
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+
+@media (max-width: 1000px) {
+  .inputRow{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 10px;
+    grid-template-areas:
+      "header header"
+      "sidebar main";
+    align-items: center;
+    justify-items: center;
+    scale: 0.9;
+  }
+    
+  .title{
+    padding-left: 0;
+  }
+
+  .infoRow{
+    width: unset;
+    padding: 0  ;
+  }
+
+  .topSection{
+    align-items: center;
+  }
+
+  .complexInput{
+    scale: 1.2;
+  }
+
+  .resultRow{
+    gap: 1rem;
+    padding: 2rem 2rem;
+  }
+
+  .split{
+    display: none;
+  }
+
+  .name{
+    max-width: fit-content;
+    margin-right: auto;
+  }
+
+  .price{
+  }
+
+  .resultsBox{
+    width: 100vw;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .btns{
+    display: grid;
+    grid-template-rows: repeat(3, 1fr); /* 3 rows, each taking up equal space */
+    width: fit-content;
+    margin: 0 auto;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    left: 0.5rem;
+  }
+
+  .prev{
+    grid-row: 1 / 2; /* Span the first row */
+    grid-column: 1 / 2; /* Span the first column */
+    margin: 0;
+  }
+
+  .next{
+    grid-row: 1 / 2; /* Span the first row */
+    grid-column: 3 / 3; /* Span the second column */
+  }
+
+  .exportBtn{
+    margin: 0;
+    grid-row: 3 / 4; /* Span the third row */
+    grid-column: 1 / 4; /* Span all columns */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+}
