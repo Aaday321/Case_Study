@@ -244,6 +244,11 @@ input::placeholder{
   cursor: pointer;
 }
 
+.cSelectors{  
+  display: flex;
+  gap: 1.5rem;
+}
+
 .exportBtn{
   margin-left: auto;
   cursor: pointer;
@@ -350,7 +355,8 @@ input::placeholder{
     margin-right: auto;
   }
 
-  .price{
+  .topRowLeft, .topRowRight, .topRowLeftSelected, .topRowRightSelected{
+    height: 2.5rem;
   }
 
   .resultsBox{
@@ -359,6 +365,15 @@ input::placeholder{
     border-radius: 0;
   }
 
+  
+  
+}
+
+@media (max-width: 1200px){
+  .resultsBox{
+    width: 100vw;
+    border-radius: 0;
+  }
   .btns{
     display: grid;
     grid-template-rows: repeat(3, 1fr); /* 3 rows, each taking up equal space */
@@ -388,6 +403,7 @@ input::placeholder{
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    top: -2rem;
   }
-  
 }
