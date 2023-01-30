@@ -74,7 +74,7 @@ function Results({statePackage, dataNeedsRefresh, setDataNeedsRefresh}) {
     useEffect(()=>{
         const args = { allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page };
         let itemsOnPage = Filter.filterData(args).length;
-        if(itemsOnPage < 15 && allData.length > 0){
+        if(itemsOnPage < 15 ){
             initialLoad.current = true;
              console.log('searching...');
             if(!yearIsRange && year){
