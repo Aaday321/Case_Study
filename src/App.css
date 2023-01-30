@@ -391,6 +391,11 @@ input::placeholder{
     margin: 0;
   }
 
+  .prev .next, .notClickable, .clickable{
+    position: relative;
+    left: 18px;
+  }
+
   .next{
     grid-row: 1 / 2; /* Span the first row */
     grid-column: 3 / 3; /* Span the second column */

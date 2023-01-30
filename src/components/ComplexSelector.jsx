@@ -90,7 +90,7 @@ function ComplexSelector({name, selectorPackage, lookUpTable}) {
 
         //Check to ensure that the "to" value is higher than the "from" value
         //If "To" is not higher, then make "to" -> "from" + 1
-        if(numFrom && numTo <= numFrom) adjustedInput = validateRangeFromValue(true) + 1;
+        if(numFrom && numTo <= numFrom) adjustedInput =  Number(validateRangeFromValue(true)) + 1;
         
         return adjustedInput;
     }
