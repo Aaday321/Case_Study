@@ -143,7 +143,7 @@ const displayData = Filter.filterData({allData, firstName, lastName, amount, amo
     let lastName = localSearch('last_name');
     let paymentAmount = i.total_amount_of_payment_usdollars;
     return (
-            <motion.li key={index} initial={{opacity:0}} animate={{opacity:100}}>
+            <motion.li key={i.record_id} initial={{opacity:0}} animate={{opacity:100}}>
                 <ResultsRow number={index+page} firstName={firstName} lastName={lastName} paymentAmount={paymentAmount} index={index}/>
             </motion.li>
             );
@@ -152,7 +152,8 @@ const displayData = Filter.filterData({allData, firstName, lastName, amount, amo
         <div className='resultsSection'>
             {'Rerenders: '+ (()=>counter.current++)()}
             <div className="infoRow">
-                <p>{isSearching && 'Searching...' || !!allData.length && `Found ${allMatches.length.toLocaleString("en-US")} matches` || !isSearching && 'Enter a year or a range of years to begin your search 🔍'}</p>
+                <p>{isSearching && 'Searching...' || !!allData.length && `Found ${allMatches.length.toLocaleString("en-US")} matches`
+                    || !isSearching && 'Enter a year or a range of years to begin your search 🔍'}</p>
             </div>
             <ul className='resultsBox'>
                 {displayData}
