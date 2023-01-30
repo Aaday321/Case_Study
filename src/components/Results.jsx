@@ -10,13 +10,13 @@ function Results({statePackage, dataNeedsRefresh, setDataNeedsRefresh}) {
     //const [ nextOffset, setNextOffset ] = useState(0);
     const [ page, setPage ] = useState(0);
 
-    const [resultsSearched, setResultsSearched] = useState(0)
+    const [ resultsSearched, setResultsSearched ] = useState(0)
 
     const counter = useRef(0)
     const initialLoad = useRef(true)
     const [ isSearching, setIsSearching ] = useState(false);
 
-    const [offset, setOffset ] = useState(0);
+    const [ offset, setOffset ] = useState(0);
 
     const { firstName, lastName, lookUpTable, setGlobalOffset } = statePackage;
     const { yearPackage, amountPackage } = statePackage;
@@ -101,7 +101,13 @@ function Results({statePackage, dataNeedsRefresh, setDataNeedsRefresh}) {
                                 //This quality check is not performant but is necessary until a better caching strategy is implemented     
 
                                 if(cur.length > 1_000)
-                                    return Filter.filterData({allData:filteredArray, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:Infinity});
+                                    return Filter.filterData({
+                                      allData: filteredArray,
+                                      firstName, lastName,
+                                      amount, amountIsRange,
+                                      amountFrom, amountTo,
+                                      page, limit: Infinity,
+                                    });
                                 else  return filteredArray;
                                 
                             });
