@@ -296,21 +296,25 @@ input::placeholder{
 
 
 @media (max-width: 1000px) {
+
+  body{
+    overflow-x: hidden;
+  }
   .inputRow{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    grid-gap: 10px;
-    grid-template-areas:
-      "header header"
-      "sidebar main";
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-items: center;
-    scale: 0.9;
+    max-width: 100vw;
   }
     
   .title{
     padding-left: 0;
+    text-align: center;
+  }
+
+  .siteCredit{
+    text-align: center;
+    margin: 0;
   }
 
   .infoRow{
@@ -318,12 +322,18 @@ input::placeholder{
     padding: 0  ;
   }
 
+  .cSelectors{
+    display: flex;
+
+    justify-content: center;
+  }
+
   .topSection{
     align-items: center;
   }
 
   .complexInput{
-    scale: 1.2;
+    scale: 0.9;
   }
 
   .resultRow{

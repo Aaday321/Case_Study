@@ -31,8 +31,10 @@ function TopSection({statePackage}) {
             onChange={e=>setLastName(e.target.value)}
             value={lastName}
         />
+        <div className="cSlectors">
         <ComplexSelector name='Year' selectorPackage={yearPackage} lookUpTable={lookUpTable}/>
         <ComplexSelector name='Amount' selectorPackage={amountPackage} lookUpTable={lookUpTable}/>
+        </div>
     </div>
     </div>
   )
