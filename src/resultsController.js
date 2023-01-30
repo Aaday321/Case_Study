@@ -53,16 +53,6 @@ export const APIcontroller = {
     },
     hitAPIwithExactYear: function(year, lookUpTable){
         if(!year) return;
-        let fnKey;
-        let lnKey;
-        if(year == 2015) {
-            fnKey = 'physician_first_name';
-            lnKey = 'physician_last_name';
-        }else{
-            fnKey = 'covered_recipient_first_name';
-            lnKey = 'covered_recipient_last_name';
-        }
-
         return this.hitEndPoint({year:lookUpTable[year], offset:0})
     },
     hitAPIwithRangeOfYears: function(yearFrom, yearTo, lookUpTable){
