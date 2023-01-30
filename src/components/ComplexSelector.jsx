@@ -107,20 +107,7 @@ function ComplexSelector({name, selectorPackage, lookUpTable}) {
 
   return (
     <div className='complexInput'>
-        <div className='topRow'>
-            <button
-                onClick={!rangeIsSelected ? ()=>{setRangeIsSelected(c=>!c); resetFields()} : null}
-                className={rangeIsSelected ? 'topRowLeftSelected' : 'topRowLeft' }
-            >
-                Range
-            </button>
-            <button
-                onClick={rangeIsSelected ? ()=>{setRangeIsSelected(c=>!c); resetFields()} : null}
-                className={rangeIsSelected ? 'topRowRight' : 'topRowRightSelected'}
-            >
-                {name}
-            </button>
-        </div>
+       
         { rangeIsSelected &&
         <div className="bottomRow">
             <input

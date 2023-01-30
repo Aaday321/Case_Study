@@ -14,6 +14,7 @@ function TopSection({statePackage}) {
     <div className='topSection'>
         <div className="title">
             <h1>{SITE_TEXT.TITLE}</h1>
+            <h2>Server-side Filtering Preview</h2>
             <p className='siteCredit'>{SITE_TEXT.CREDIT}</p>
         </div>
     <div className='inputRow'>
@@ -24,16 +25,8 @@ function TopSection({statePackage}) {
             onChange={e=>setFirstName(e.target.value)}
             value={firstName}
         />
-        <input
-            className='nameInput'
-            type="text"
-            placeholder='Last Name'
-            onChange={e=>setLastName(e.target.value)}
-            value={lastName}
-        />
         <div className="cSelectors">
         <ComplexSelector name='Year' selectorPackage={yearPackage} lookUpTable={lookUpTable}/>
-        <ComplexSelector name='Amount' selectorPackage={amountPackage} lookUpTable={lookUpTable}/>
         </div>
     </div>
     </div>

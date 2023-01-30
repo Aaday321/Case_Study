@@ -10,6 +10,7 @@ import ComplexSelector from './components/ComplexSelector'
 import TopSection from './components/TopSection'
 import Results from './components/Results'
 import DevPreview from './components/DevPreview'
+import NewResults from './components/NewResults'
 
 function App() {
   const [ renderDevPreview, setRenderDevPreview ] = useState(false);
@@ -87,7 +88,7 @@ function App() {
       <TopSection statePackage={statePackage}/>
       <button className='devBtn' onClick={()=>setRenderDevPreview(c=>!c)}>{renderDevPreview && 'Hide state preview' || 'Show state preview'}</button>
       {renderDevPreview && <DevPreview statePackage={statePackage}/>}
-      <Results statePackage={statePackage} dataNeedsRefresh={dataNeedsRefresh} setDataNeedsRefresh={setDataNeedsRefresh}/>
+      <NewResults statePackage={statePackage} dataNeedsRefresh={dataNeedsRefresh} setDataNeedsRefresh={setDataNeedsRefresh}/>
     </div>
   )
 }
