@@ -24,7 +24,7 @@ function App() {
   const exactAmount = useState("");
   const [ globalOffset, setGlobalOffset ] = useState(0);
 
-//  const [ allDataCount, setAllDataCount ] = useState(0);
+ // const [ cachedData, setCachedData ] = useState(0);
 
 
 
@@ -75,7 +75,8 @@ function App() {
       exactAmount,
     ],
     lookUpTable, //Key value pairs of years and their ids
-    globalOffset, setGlobalOffset
+    globalOffset, setGlobalOffset,
+ //   cachedData, setCachedData
   }
 
 

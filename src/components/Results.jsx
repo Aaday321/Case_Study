@@ -10,6 +10,7 @@ function Results({statePackage, dataNeedsRefresh, setDataNeedsRefresh}) {
     //const [ nextOffset, setNextOffset ] = useState(0);
     const [ page, setPage ] = useState(0);
 
+    const [resultsSearched, setResultsSearched] = useState(0)
 
     const counter = useRef(0)
     const initialLoad = useRef(true)
@@ -17,7 +18,7 @@ function Results({statePackage, dataNeedsRefresh, setDataNeedsRefresh}) {
 
     const [offset, setOffset ] = useState(0);
 
-    const { firstName, lastName, lookUpTable, setGlobalOffset} = statePackage;
+    const { firstName, lastName, lookUpTable, setGlobalOffset } = statePackage;
     const { yearPackage, amountPackage } = statePackage;
     const [ yearRangeToggle, yearRange, exactYear ] = yearPackage;
     const [ amountRangeToggle, amountRange, exactAmount ] = amountPackage;
@@ -44,12 +45,16 @@ function Results({statePackage, dataNeedsRefresh, setDataNeedsRefresh}) {
         setPage(0);
         if(!yearIsRange && year) {
             APIcontroller.hitAPIwithExactYear(year, lookUpTable)
-                ?.then(r=>setAllData(r.data.results))
+                ?.then(r=>{
+                    setAllData(r.data.results);
+                })
                 ?.catch(err=>console.log(err));
         }
         else if(yearIsRange && yearFrom && yearTo) {
             APIcontroller.hitAPIwithRangeOfYears(yearFrom, yearTo, lookUpTable)
-                ?.then(r=>setAllData(r))
+                ?.then(r=>{
+                    setAllData(r);
+                })
                 ?.catch(err=>console.log(err));
         }
         setDataNeedsRefresh(false);
@@ -74,9 +79,8 @@ function Results({statePackage, dataNeedsRefresh, setDataNeedsRefresh}) {
         const args = { allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page };
         let itemsOnPage = Filter.filterData(args).length;
         if(itemsOnPage < 15 && allData.length > 0){
-            if(initialLoad.current == false) setIsSearching(true);
             initialLoad.current = true;
-            console.log('searching...');
+             console.log('searching...');
             if(!yearIsRange && year){
                 setOffset(c=>{
                     if(limitHit) return limits[year]; //Don't make an API call if the limit is hit
@@ -89,11 +93,24 @@ function Results({statePackage, dataNeedsRefresh, setDataNeedsRefresh}) {
                         blockLevelLimitHit = true;
                     }
                     if(blockLevelLimitHit) return limits[year];
+                    setIsSearching(true);
                     APIcontroller.grabMoreDataExactYear({year: lookUpTable[year], offset: nextOffset})
                         .then(r=>{
                             setAllData(cur=>{
-                                if(cur.length > 50_000)return Filter.filterData({allData:[...cur, ...r.data.results], firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:Infinity})
-                                else return [...cur, ...r.data.results];
+                                let concat = [...cur, ...r.data.results]; 
+
+                                // Quality checking the data
+                                const values = concat.map(obj => JSON.stringify(obj));
+                                const filteredArray = concat.filter((obj, i) => values.indexOf(JSON.stringify(obj)) === i);
+                                //This quality check is not performant but is necessary until a better caching strategy is implemented     
+
+                                if(cur.length > 1_000){
+                                    return Filter.filterData({allData:filteredArray, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:Infinity});
+                    
+                                }
+                                else {
+                                    return filteredArray;
+                                }
                             });
                         });
                     return nextOffset;
@@ -101,14 +118,32 @@ function Results({statePackage, dataNeedsRefresh, setDataNeedsRefresh}) {
             }else if(yearIsRange && yearFrom && yearTo && itemsOnPage < 15){
                 setOffset(c=>{
                     let nextOffset = c+500;
+                    setIsSearching(true);
                     APIcontroller.grabMoreDataWithRange({offset:nextOffset, yearFrom, yearTo, lookUpTable, dataCounts:limits})
-                        .then(r=>setAllData(cur=>[...cur, ...r]))
+                        .then(r=>setAllData(cur=>{
+                            let concat = [...cur, ...r]; 
+
+                            // Quality checking the data
+                            const values = concat.map(obj => JSON.stringify(obj));
+                            const filteredArray = concat.filter((obj, i) => values.indexOf(JSON.stringify(obj)) === i);
+                            //This quality check is not performant but is necessary until a better caching strategy is implemented     
+
+                            if(cur.length > 1_000){
+                                return Filter.filterData({allData:filteredArray, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:Infinity});
+                            }
+                            else {
+                                return filteredArray;
+                            }
+                        }))
                     return nextOffset;
                 })
             }
         } else setIsSearching(false);
-        return ()=>{initialLoad.current = false}
+        return ()=>{initialLoad.current = false};
     },[page, firstName, allData, lastName, amount, amountFrom, amountTo]);
+
+
+
 
 const allMatches = Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:Infinity})
 const displayData = Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:false}).map( function(i,index,thisArray) {
@@ -126,8 +161,7 @@ const displayData = Filter.filterData({allData, firstName, lastName, amount, amo
         <div className='resultsSection'>
             {'Rerenders: '+ (()=>counter.current++)()}
             <div className="infoRow">
-                <p>{isSearching && allData.length > 0 && 'Searching...' || !!allData.length && `Found ${allMatches.length.toLocaleString("en-US")} matches` || 'Enter a year or a range of years to begin your search 🔍'}</p>
-                <p>Currently caching {allData.length.toLocaleString("en-US")} </p>
+                <p>{isSearching && 'Searching...' || !!allData.length && `Found ${allMatches.length.toLocaleString("en-US")} matches` || 'Enter a year or a range of years to begin your search 🔍'}</p>
             </div>
             <ul className='resultsBox'>
                 {displayData}
@@ -138,7 +172,7 @@ const displayData = Filter.filterData({allData, firstName, lastName, amount, amo
                     onClick={()=>setPage(c=>{
                         if(c>0) return c-15;
                         else return 0;
-                    })}
+                    })} 
                 >
                     {'< Previous'}
                 </button>

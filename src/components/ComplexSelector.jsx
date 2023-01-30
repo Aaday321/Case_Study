@@ -59,7 +59,7 @@ function ComplexSelector({name, selectorPackage, lookUpTable}) {
         setExactValue('');
     }
 
-    const validateRangeFromValue = () => {
+    const validateRangeFromValue = (usedFromTo) => {
         if(!from) return;
         const numFrom = Number(from);
         const numTo = Number(to);
@@ -72,7 +72,7 @@ function ComplexSelector({name, selectorPackage, lookUpTable}) {
         
         //Check to ensure that the "from" value is lower than the "to" value
         //If "From" is not lower, then make "to" -> "from" + 1
-        if(numTo && adjustedInput >= numTo) setTo(Number(adjustedInput)+1)
+        if(numTo && adjustedInput >= numTo)  usedFromTo ? null : setTo(Number(adjustedInput)+1)
 
         return adjustedInput;
     }
@@ -90,7 +90,7 @@ function ComplexSelector({name, selectorPackage, lookUpTable}) {
 
         //Check to ensure that the "to" value is higher than the "from" value
         //If "To" is not higher, then make "to" -> "from" + 1
-        if(numFrom && numTo <= numFrom) adjustedInput = validateRangeFromValue() + 1;
+        if(numFrom && numTo <= numFrom) adjustedInput = validateRangeFromValue(true) + 1;
         
         return adjustedInput;
     }

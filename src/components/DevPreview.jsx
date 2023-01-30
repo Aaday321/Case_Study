@@ -2,7 +2,7 @@ import React from 'react'
 
 function DevPreview({statePackage}) {
 
-    const { firstName, lastName, globalOffset } = statePackage;
+    const { firstName, lastName, globalOffset, cachedData } = statePackage;
     const { yearPackage, amountPackage } = statePackage;
     const [ yearRangeToggle, yearRange, exactYear ] = yearPackage;
     const [ amountRangeToggle, amountRange, exactAmount ] = amountPackage;
@@ -31,6 +31,8 @@ function DevPreview({statePackage}) {
         {amountIsRange && <p><strong>Amount To: </strong>{amountTo}</p>}
         {amountIsRange || <p><strong>Exact Amount: </strong>{amount}</p>}
         <br />
+       {// <p><strong>Cached Data: </strong >{cachedData}</p>
+       }
         <p><strong>Offset: </strong>{globalOffset.toLocaleString("en-US")}</p>
     </div>
   )
