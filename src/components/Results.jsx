@@ -45,16 +45,12 @@ function Results({statePackage, dataNeedsRefresh, setDataNeedsRefresh}) {
         setPage(0);
         if(!yearIsRange && year) {
             APIcontroller.hitAPIwithExactYear(year, lookUpTable)
-                ?.then(r=>{
-                    setAllData(r.data.results);
-                })
+                ?.then(r=>setAllData(r.data.results))
                 ?.catch(err=>console.log(err));
         }
         else if(yearIsRange && yearFrom && yearTo) {
             APIcontroller.hitAPIwithRangeOfYears(yearFrom, yearTo, lookUpTable)
-                ?.then(r=>{
-                    setAllData(r);
-                })
+                ?.then(r=>setAllData(r))
                 ?.catch(err=>console.log(err));
         }
         setDataNeedsRefresh(false);
@@ -104,13 +100,10 @@ function Results({statePackage, dataNeedsRefresh, setDataNeedsRefresh}) {
                                 const filteredArray = concat.filter((obj, i) => values.indexOf(JSON.stringify(obj)) === i);
                                 //This quality check is not performant but is necessary until a better caching strategy is implemented     
 
-                                if(cur.length > 1_000){
+                                if(cur.length > 1_000)
                                     return Filter.filterData({allData:filteredArray, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:Infinity});
-                    
-                                }
-                                else {
-                                    return filteredArray;
-                                }
+                                else  return filteredArray;
+                                
                             });
                         });
                     return nextOffset;
@@ -128,23 +121,21 @@ function Results({statePackage, dataNeedsRefresh, setDataNeedsRefresh}) {
                             const filteredArray = concat.filter((obj, i) => values.indexOf(JSON.stringify(obj)) === i);
                             //This quality check is not performant but is necessary until a better caching strategy is implemented     
 
-                            if(cur.length > 1_000){
+                            if(cur.length > 1_000)
                                 return Filter.filterData({allData:filteredArray, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:Infinity});
-                            }
-                            else {
-                                return filteredArray;
-                            }
+                            else return filteredArray;
                         }))
                     return nextOffset;
                 })
             }
-        } else setIsSearching(false);
+        } else if(itemsOnPage >= 15){setIsSearching(false)}
         return ()=>{initialLoad.current = false};
     },[page, firstName, allData, lastName, amount, amountFrom, amountTo]);
 
 
 
-
+//Filtering twice here is not necessary and not performant. Rewriting the filterData method so that it does not need to be sorted twice is advisable
+    //This would be accomplished by moving the limit value out of the object argument
 const allMatches = Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:Infinity})
 const displayData = Filter.filterData({allData, firstName, lastName, amount, amountIsRange, amountFrom, amountTo, page, limit:false}).map( function(i,index,thisArray) {
     let localSearch = Filter.findKey(i);
@@ -161,7 +152,7 @@ const displayData = Filter.filterData({allData, firstName, lastName, amount, amo
         <div className='resultsSection'>
             {'Rerenders: '+ (()=>counter.current++)()}
             <div className="infoRow">
-                <p>{isSearching && 'Searching...' || !!allData.length && `Found ${allMatches.length.toLocaleString("en-US")} matches` || 'Enter a year or a range of years to begin your search 🔍'}</p>
+                <p>{isSearching && 'Searching...' || !!allData.length && `Found ${allMatches.length.toLocaleString("en-US")} matches` || !isSearching && 'Enter a year or a range of years to begin your search 🔍'}</p>
             </div>
             <ul className='resultsBox'>
                 {displayData}
