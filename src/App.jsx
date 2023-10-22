@@ -41,7 +41,7 @@ function App() {
     const years = generalPayments.map(i=>Number(i.title.split(' ')[0])); //Grab the years from the General Payment Data
     const identifiers = generalPayments.map(i=>i.identifier); //Grab only the identifiers from the General Payment Data
     const table = {};
-    for(let i=0; i<identifiers.length; i++) table[years[i]] = identifiers[i]; //Creates table that looks like: {"2015":"ID_STRING", "2016", "ID_STRING"}
+    for(let i=0; i<identifiers.length; i++) table[years[i]] = identifiers[i]; //Creates table that looks like: {"2015":"ID_STRING", "2016":"ID_STRING"}
     return table;
   }
 
